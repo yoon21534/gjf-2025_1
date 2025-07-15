@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>이미지 태그, 입력 태그</title>
+    <style>
+        img {
+            width: 200px;
+        }
+    </style>
+    <script>
+        // JS 들어가는 곳1
+    </script>
+</head>
+<body>
+    <img src="cafe.jpg" alt="카페이미지">
+    <!-- 줄바꿈 -->
+    <br>
+    <!-- 서버로 데이터를 전송하는 태그 -->
+    <form action="http://myserver.com">
+        <input type="text" placeholder="아이디를 입력하세요.">
+        <br>
+        <input type="password" placeholder="암호를 입력하세요.">
+        <br>
+        <input type="submit" value="제출">
+    </form>
+    <button onclick="alert('버튼 클릭됨!')">버튼</button>
+    <!-- 한줄차지(줄바꿈) -->
+    <!-- div h1~h6 p hr table ol ul li form -->
+    <!-- 한칸차지(줄바꿈) -->
+    <!-- span a input label text속성(b small ...) img select -->
+     <script>
+        // JS 들어가는 곳2
+        let buttons = document.getElementsByTagName("button");
+        buttons[0].innerText = "버튼 찾음";
+        buttons[0].style.color = "red";
+     </script>
+</body>
+</html>

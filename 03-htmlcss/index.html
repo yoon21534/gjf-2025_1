@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수강신청 시스템</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #667eea;
+            background: transparent;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .course-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .course-item {
+            background: #f8fafc;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-item:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .course-details {
+            flex-grow: 1;
+        }
+
+        .course-title {
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .course-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+            color: #718096;
+        }
+
+        .course-capacity {
+            color: #e53e3e;
+            font-weight: bold;
+        }
+
+        .course-capacity.available {
+            color: #38a169;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #e53e3e, #c53030);
+        }
+
+        .selected-courses {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .selected-course {
+            background: #e6fffa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 4px solid #38a169;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .credits-info {
+            background: rgba(56, 161, 105, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .timetable {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px; /* Added margin for separation */
+        }
+
+        .timetable h2 {
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .time-grid {
+            display: grid;
+            grid-template-columns: 80px repeat(5, 1fr);
+            gap: 2px;
+            background: #e2e8f0;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .time-header {
+            background: #667eea;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 5px; /* Added border-radius for headers */
+        }
+
+        .time-header:first-child {
+            background: transparent; /* Empty top-left corner */
+        }
+
+        .time-slot {
+            background: white;
+            padding: 8px 4px;
+            text-align: center;
+            font-size: 0.8em;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px; /* Added border-radius for slots */
+            position: relative; /* For positioning course names */
+            overflow: hidden; /* Hide overflowing text */
+            text-overflow: ellipsis; /* Add ellipsis for overflow */
+            white-space: nowrap; /* Prevent text wrap */
+        }
+
+        .time-slot.occupied {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        .time-slot-course-name {
+            font-size: 0.7em; /* Smaller font for course name in slot */
+            color: rgba(255, 255, 255, 0.9);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            padding: 0 2px;
+            box-sizing: border-box;
+        }
+
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #718096;
+        }
+
+        .close:hover {
+            color: #2d3748;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .time-grid {
+                grid-template-columns: 60px repeat(5, 1fr);
+            }
+
+            .time-slot {
+                min-height: 30px;
+                font-size: 0.7em;
+            }
+            .time-slot-course-name {
+                font-size: 0.6em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 수강신청 시스템</h1>
+            <div class="user-info">
+                <div>
+                    <span>👤 학번: 2024123456</span>
+                    <span style="margin-left: 20px;">📖 이름: 홍길동</span>
+                </div>
+                <div>
+                    <span>🎓 학과: 컴퓨터공학과</span>
+                    <span style="margin-left: 20px;">📊 학년: 3학년</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="section">
+                <h2>🔍 강의 검색</h2>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="강의명 또는 교수명을 검색하세요...">
+                </div>
+                <div class="filters">
+                    <button class="filter-btn active" data-filter="all">전체</button>
+                    <button class="filter-btn" data-filter="major">전공</button>
+                    <button class="filter-btn" data-filter="general">교양</button>
+                    <button class="filter-btn" data-filter="available">신청가능</button>
+                </div>
+                <div class="course-list" id="courseList">
+                    </div>
+            </div>
+
+            <div class="section">
+                <h2>📝 신청한 강의</h2>
+                <div class="credits-info">
+                    <strong>📊 신청 학점: <span id="currentCredits">0</span>/21</strong>
+                </div>
+                <div class="selected-courses" id="selectedCourses">
+                    <p style="text-align: center; color: #718096; margin-top: 50px;">신청한 강의가 없습니다.</p>
+                </div>
+                <button class="btn" onclick="submitRegistration()" style="width: 100%; margin-top: 20px;">
+                    ✅ 수강신청 완료
+                </button>
+            </div>
+        </div>
+
+        <div class="timetable">
+            <h2>📅 시간표</h2>
+            <div class="time-grid" id="timetable">
+                </div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3 id="modalTitle"></h3>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        // 강의 데이터
+        const courses = [
+            {
+                id: 1,
+                name: "자료구조",
+                professor: "김교수",
+                credits: 3,
+                time: "월3,4 수3,4",
+                capacity: "25/30",
+                type: "major",
+                available: true,
+                timeSlots: [{day: 1, periods: [3, 4]}, {day: 3, periods: [3, 4]}] // day: 1=월, 2=화, ..., 5=금
+            },
+            {
+                id: 2,
+                name: "운영체제",
+                professor: "이교수",
+                credits: 3,
+                time: "화1,2 목1,2",
+                capacity: "30/30",
+                type: "major",
+                available: false,
+                timeSlots: [{day: 2, periods: [1, 2]}, {day: 4, periods: [1, 2]}]
+            },
+            {
+                id: 3,
+                name: "선형대수학",
+                professor: "박교수",
+                credits: 3,
+                time: "월1,2 수1,2",
+                capacity: "20/25",
+                type: "major",
+                available: true,
+                timeSlots: [{day: 1, periods: [1, 2]}, {day: 3, periods: [1, 2]}]
+            },
+            {
+                id: 4,
+                name: "글로벌 비즈니스",
+                professor: "최교수",
+                credits: 2,
+                time: "화3,4",
+                capacity: "10/40",
+                type: "general",
+                available: true,
+                timeSlots: [{day: 2, periods: [3, 4]}]
+            },
+            {
+                id: 5,
+                name: "컴퓨터 네트워크",
+                professor: "정교수",
+                credits: 3,
+                time: "목3,4 금3,4",
+                capacity: "15/30",
+                type: "major",
+                available: true,
+                timeSlots: [{day: 4, periods: [3, 4]}, {day: 5, periods: [3, 4]}]
+            },
+            {
+                id: 6,
+                name: "고급 영어회화",
+                professor: "외국인교수",
+                credits: 2,
+                time: "월5,6",
+                capacity: "8/20",
+                type: "general",
+                available: true,
+                timeSlots: [{day: 1, periods: [5, 6]}]
+            },
+            {
+                id: 7,
+                name: "인공지능 개론",
+                professor: "강교수",
+                credits: 3,
+                time: "화5,6 목5,6",
+                capacity: "40/40",
+                type: "major",
+                available: false,
+                timeSlots: [{day: 2, periods: [5, 6]}, {day: 4, periods: [5, 6]}]
+            },
+            {
+                id: 8,
+                name: "창의적 사고",
+                professor: "윤교수",
+                credits: 2,
+                time: "수5,6",
+                capacity: "5/30",
+                type: "general",
+                available: true,
+                timeSlots: [{day: 3, periods: [5, 6]}]
+            }
+        ];
+
+        let selectedCourses = []; // 사용자가 신청한 강의 목록
+        const maxCredits = 21; // 최대 신청 가능 학점
+
+        const courseListElem = document.getElementById('courseList');
+        const searchInput = document.getElementById('searchInput');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const selectedCoursesElem = document.getElementById('selectedCourses');
+        const currentCreditsElem = document.getElementById('currentCredits');
+        const timetableElem = document.getElementById('timetable');
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+
+        // 요일 및 교시 설정
+        const days = ["", "월", "화", "수", "목", "금"]; // 첫 번째는 빈칸으로, grid-column 1에 해당
+        const periods = Array.from({length: 9}, (_, i) => `${i + 1}교시`); // 1교시부터 9교시까지
+
+        // --- 초기화 함수 ---
+        function initializeApp() {
+            renderCourseList(courses);
+            renderSelectedCourses();
+            renderTimetable();
+        }
+
+        // --- 강의 목록 렌더링 함수 ---
+        function renderCourseList(filteredCourses) {
+            courseListElem.innerHTML = '';
+            if (filteredCourses.length === 0) {
+                courseListElem.innerHTML = '<p style="text-align: center; color: #718096; margin-top: 50px;">검색 결과가 없습니다.</p>';
+                return;
+            }
+
+            filteredCourses.forEach(course => {
+                const isSelected = selectedCourses.some(selected => selected.id === course.id);
+                const isAvailable = course.available && !isSelected; // 이미 선택된 강의는 다시 선택할 수 없음
+
+                const courseItem = document.createElement('div');
+                courseItem.className = 'course-item';
+                if (!isAvailable || isSelected) {
+                    courseItem.style.opacity = '0.6'; // 신청 불가능하거나 이미 신청된 강의는 흐리게 표시
+                    courseItem.style.cursor = 'not-allowed';
+                }
+
+                courseItem.innerHTML = `
+                    <div class="course-details">
+                        <div class="course-title">${course.name} (${course.type === 'major' ? '전공' : '교양'})</div>
+                        <div class="course-info">
+                            <span>${course.professor} | ${course.credits}학점</span>
+                            <span class="course-capacity ${course.available ? 'available' : ''}">${course.capacity}</span>
+                        </div>
+                        <div class="course-info" style="margin-top: 5px;">
+                            <span>시간: ${course.time}</span>
+                        </div>
+                    </div>
+                    ${isAvailable ? `<button class="btn" data-id="${course.id}" onclick="addCourse(${course.id})">신청</button>` :
+                                    (isSelected ? `<button class="btn btn-danger" data-id="${course.id}" onclick="removeCourse(${course.id})">취소</button>` : `<button class="btn" disabled>마감</button>`)}
+                `;
+                courseListElem.appendChild(courseItem);
+            });
+        }
+
+        // --- 선택된 강의 목록 렌더링 함수 ---
+        function renderSelectedCourses() {
+            selectedCoursesElem.innerHTML = '';
+            if (selectedCourses.length === 0) {
+                selectedCoursesElem.innerHTML = '<p style="text-align: center; color: #718096; margin-top: 50px;">신청한 강의가 없습니다.</p>';
+            }
+
+            let totalCredits = 0;
+            selectedCourses.forEach(course => {
+                totalCredits += course.credits;
+                const selectedCourseItem = document.createElement('div');
+                selectedCourseItem.className = 'selected-course';
+                selectedCourseItem.innerHTML = `
+                    <div>
+                        <div class="course-title">${course.name} (${course.credits}학점)</div>
+                        <div class="course-info">${course.professor} | ${course.time}</div>
+                    </div>
+                    <button class="btn btn-danger" onclick="removeCourse(${course.id})">삭제</button>
+                `;
+                selectedCoursesElem.appendChild(selectedCourseItem);
+            });
+            currentCreditsElem.textContent = totalCredits;
+        }
+
+        // --- 시간표 렌더링 함수 ---
+        function renderTimetable() {
+            timetableElem.innerHTML = '';
+
+            // 요일 헤더 추가 (첫 칸 비워둠)
+            days.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'time-header';
+                header.textContent = day;
+                timetableElem.appendChild(header);
+            });
+
+            // 시간(교시) 및 시간표 칸 추가
+            periods.forEach((period, periodIndex) => {
+                // 교시 헤더
+                const periodHeader = document.createElement('div');
+                periodHeader.className = 'time-slot'; // Reusing time-slot for styling
+                periodHeader.style.fontWeight = 'bold';
+                periodHeader.style.backgroundColor = '#f0f4f8';
+                periodHeader.style.justifyContent = 'flex-end'; // Align period text to the right
+                periodHeader.style.paddingRight = '8px';
+                periodHeader.textContent = period;
+                timetableElem.appendChild(periodHeader);
+
+                // 요일별 시간 칸
+                for (let dayIndex = 1; dayIndex < days.length; dayIndex++) { // 월요일부터 금요일까지 (index 1-5)
+                    const slot = document.createElement('div');
+                    slot.className = 'time-slot';
+                    slot.dataset.day = dayIndex;
+                    slot.dataset.period = periodIndex + 1; // 1-indexed period
+                    timetableElem.appendChild(slot);
+                }
+            });
+
+            // 선택된 강의를 시간표에 표시
+            updateTimetable();
+        }
+
+        // --- 시간표 업데이트 함수 (선택된 강의 기반) ---
+        function updateTimetable() {
+            // 모든 시간표 칸 초기화
+            document.querySelectorAll('.time-slot.occupied').forEach(slot => {
+                slot.classList.remove('occupied');
+                slot.innerHTML = ''; // Remove course name
+            });
+
+            selectedCourses.forEach(course => {
+                course.timeSlots.forEach(slotInfo => {
+                    slotInfo.periods.forEach(period => {
+                        const timeSlotElement = timetableElem.querySelector(`.time-slot[data-day="${slotInfo.day}"][data-period="${period}"]`);
+                        if (timeSlotElement) {
+                            timeSlotElement.classList.add('occupied');
+                            timeSlotElement.innerHTML = `<span class="time-slot-course-name">${course.name}</span>`;
+                        }
+                    });
+                });
+            });
+        }
+
+        // --- 강의 추가 함수 ---
+        function addCourse(courseId) {
+            const courseToAdd = courses.find(course => course.id === courseId);
+
+            if (!courseToAdd) return;
+
+            // 이미 신청된 강의인지 확인
+            if (selectedCourses.some(course => course.id === courseId)) {
+                showModal('알림', '이미 신청된 강의입니다.');
+                return;
+            }
+
+            // 학점 제한 확인
+            const currentCredits = selectedCourses.reduce((sum, course) => sum + course.credits, 0);
+            if (currentCredits + courseToAdd.credits > maxCredits) {
+                showModal('신청 불가', `최대 신청 학점(${maxCredits}학점)을 초과합니다. 현재 ${currentCredits}학점이며, ${courseToAdd.credits}학점을 추가하면 총 ${currentCredits + courseToAdd.credits}학점이 됩니다.`);
+                return;
+            }
+
+            // 시간표 충돌 확인
+            const conflicts = checkTimeConflict(courseToAdd);
+            if (conflicts.length > 0) {
+                let conflictMessage = `선택하신 강의는 다음 강의와 시간이 겹칩니다:<br><br>`;
+                conflicts.forEach(conflictCourse => {
+                    conflictMessage += `- <strong>${conflictCourse.name}</strong> (${conflictCourse.time})<br>`;
+                });
+                showModal('시간표 충돌', conflictMessage);
+                return;
+            }
+
+            // 정원 확인 (여기서는 단순히 available 속성만 확인)
+            if (!courseToAdd.available) {
+                showModal('신청 불가', '해당 강의는 정원이 마감되었습니다.');
+                return;
+            }
+
+            selectedCourses.push(courseToAdd);
+            renderSelectedCourses();
+            renderCourseList(filterAndSearchCourses()); // 강의 목록 업데이트 (신청 버튼 변경)
+            updateTimetable(); // 시간표 업데이트
+        }
+
+        // --- 강의 삭제 함수 ---
+        function removeCourse(courseId) {
+            selectedCourses = selectedCourses.filter(course => course.id !== courseId);
+            renderSelectedCourses();
+            renderCourseList(filterAndSearchCourses()); // 강의 목록 업데이트 (취소 버튼 변경)
+            updateTimetable(); // 시간표 업데이트
+        }
+
+        // --- 시간표 충돌 확인 함수 ---
+        function checkTimeConflict(newCourse) {
+            const conflicts = [];
+            newCourse.timeSlots.forEach(newSlot => {
+                selectedCourses.forEach(existingCourse => {
+                    existingCourse.timeSlots.forEach(existingSlot => {
+                        if (newSlot.day === existingSlot.day) {
+                            // 같은 요일인 경우 시간 겹치는지 확인
+                            const newPeriodsSet = new Set(newSlot.periods);
+                            const existingPeriodsSet = new Set(existingSlot.periods);
+
+                            for (const newPeriod of newPeriodsSet) {
+                                if (existingPeriodsSet.has(newPeriod)) {
+                                    conflicts.push(existingCourse);
+                                    return; // 이 강의와의 충돌을 찾았으니 다음 강의로 넘어감
+                                }
+                            }
+                        }
+                    });
+                });
+            });
+            // 중복 제거
+            return Array.from(new Set(conflicts));
+        }
+
+        // --- 검색 및 필터링 함수 ---
+        function filterAndSearchCourses() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+
+            return courses.filter(course => {
+                const matchesSearch = course.name.toLowerCase().includes(searchTerm) ||
+                                      course.professor.toLowerCase().includes(searchTerm);
+                
+                const matchesFilter = (activeFilter === 'all') ||
+                                      (activeFilter === 'major' && course.type === 'major') ||
+                                      (activeFilter === 'general' && course.type === 'general') ||
+                                      (activeFilter === 'available' && course.available);
+                
+                return matchesSearch && matchesFilter;
+            });
+        }
+
+        // --- 이벤트 리스너 ---
+        searchInput.addEventListener('keyup', () => {
+            renderCourseList(filterAndSearchCourses());
+        });
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                renderCourseList(filterAndSearchCourses());
+            });
+        });
+
+        // --- 모달 함수 ---
+        function showModal(title, message) {
+            modalTitle.textContent = title;
+            modalBody.innerHTML = message;
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        // --- 수강신청 완료 버튼 클릭 시 ---
+        function submitRegistration() {
+            if (selectedCourses.length === 0) {
+                showModal('신청 완료', '신청된 강의가 없습니다. 강의를 선택해주세요.');
+                return;
+            }
+            const totalCredits = selectedCourses.reduce((sum, course) => sum + course.credits, 0);
+            showModal('수강신청 완료', `총 ${totalCredits}학점, ${selectedCourses.length}개 강의 신청이 완료되었습니다!`);
+            // 실제 서버 전송 로직은 여기에 추가
+        }
+
+        // 앱 초기화
+        initializeApp();
+    </script>
+</body>
+</html>
