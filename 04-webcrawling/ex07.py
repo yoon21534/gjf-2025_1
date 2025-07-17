@@ -15,6 +15,9 @@ for i in range(1,23):
     review = soup.find_all('p', class_ = 'con')
     date = soup.find_all('span', class_ = 'date')
 
+    # re : 정규식
+    # zip : 두 리스트를 병렬로 순회하는 함수 [리뷰] [날짜]
+
     for i, k in zip(review, date):
         #re.sub(제거할 텍스트, 대체할 텍스트, 원본텍스트)
         result += k.text +' '+ re.sub('\n|\r', '', i.text) + '\n'
