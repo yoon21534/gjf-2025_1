@@ -2,6 +2,7 @@
 """
 Flask REST API Server with Supabase CRUD operations
 학생 관리를 위한 REST API 서버
+"""
 
 from flask import Flask, request, jsonify
 from supabase import create_client, Client
