@@ -1,5 +1,7 @@
-streamlit
-requests
-pandas
-matplotlib
-seaborn
+streamlit==1.36.0
+requests==2.32.3
+pandas==2.2.2
+matplotlib==3.9.1
+seaborn==0.13.2
+python-dotenv==1.0.1
+plotly==5.22.0 
